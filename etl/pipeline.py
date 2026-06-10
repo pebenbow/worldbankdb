@@ -34,11 +34,19 @@ def run(
             logger.info("filtered to %d indicators", len(indicators))
 
         all_rows: list[dict] = []
+        failed: list[str] = []
         for idx, ind in enumerate(indicators, 1):
             code = ind["indicator_code"]
             logger.info("[%d/%d] fetching %s", idx, len(indicators), code)
-            rows = extract.fetch_indicator_data(code, start_year, end_year)
-            all_rows.extend(rows)
+            try:
+                rows = extract.fetch_indicator_data(code, start_year, end_year)
+                all_rows.extend(rows)
+            except Exception as exc:
+                logger.warning("skipping %s — %s", code, exc)
+                failed.append(code)
+
+        if failed:
+            logger.warning("skipped %d indicator(s): %s", len(failed), ", ".join(failed))
 
         logger.info("--- load staging (%d rows) ---", len(all_rows))
         load.truncate_staging(conn)
