@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS public.dim_date (
+    date_key SERIAL  PRIMARY KEY,
+    year     INTEGER NOT NULL UNIQUE,
+    decade   INTEGER NOT NULL GENERATED ALWAYS AS (year / 10 * 10)   STORED,
+    century  INTEGER NOT NULL GENERATED ALWAYS AS (year / 100 * 100) STORED
+);

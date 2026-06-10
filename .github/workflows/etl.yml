@@ -1,0 +1,45 @@
+name: ETL
+
+on:
+  schedule:
+    - cron: "0 6 2 1 *"  # 06:00 UTC on January 2nd each year
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: Start year
+        required: false
+        default: "2000"
+      end_year:
+        description: End year
+        required: false
+        default: "2023"
+      indicator_codes:
+        description: Comma-separated indicator codes (leave empty for all ~1400 WDI indicators)
+        required: false
+        default: ""
+
+jobs:
+  run-pipeline:
+    name: Run WDI pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    environment: supabase_prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Run ETL pipeline
+        env:
+          DATABASE_URL:        ${{ secrets.DATABASE_URL }}
+          WB_START_YEAR:       ${{ inputs.start_year  || '2000' }}
+          WB_END_YEAR:         ${{ inputs.end_year    || '2023' }}
+          WB_INDICATOR_CODES:  ${{ inputs.indicator_codes }}
+        run: python -m etl.pipeline
