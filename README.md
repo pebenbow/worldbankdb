@@ -16,16 +16,16 @@ A PostgreSQL data warehouse built on [Supabase](https://supabase.com) that store
 
 ### ELT flow
 
-```
-World Bank API
-     │
-     │  extract.py  — paginated HTTP requests, one indicator at a time
-     ▼
-staging.stg_wdi_raw
-     │
-     │  transform.py  — SQL upserts running inside PostgreSQL
-     ▼
-dim_country / dim_indicator / dim_date / fact_wdi
+```mermaid
+flowchart LR
+    API(["World Bank API"])
+    STG[("staging.stg_wdi_raw")]
+    DIM["dim_country\ndim_indicator\ndim_date"]
+    FACT[("fact_wdi")]
+
+    API -- "extract.py + load.py\npaginated HTTP, bulk insert" --> STG
+    STG -- "transform.py\nSQL upsert" --> DIM
+    DIM & STG -- "transform.py\nSQL JOIN + upsert" --> FACT
 ```
 
 The transform step runs entirely in the database. No data is held in application memory beyond the staging load.
