@@ -17,7 +17,7 @@ def cur(db_conn):
         yield c
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="session")
 def seed(db_conn):
     """Insert minimal test fixtures once for the session.
 

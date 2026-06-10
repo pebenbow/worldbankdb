@@ -205,8 +205,11 @@ supabase start
 # Reset the database and re-apply all migrations
 supabase db reset
 
-# Run the test suite
+# Run all tests against the local ephemeral database
 DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres pytest tests/ -v
+
+# Run only schema tests (read-only — safe against any database, including production)
+DATABASE_URL=postgresql://postgres:postgres@localhost:54322/postgres pytest -m schema -v
 
 # Stop Supabase
 supabase stop

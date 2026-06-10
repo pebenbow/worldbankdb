@@ -1,5 +1,7 @@
 import pytest
 
+pytestmark = pytest.mark.schema
+
 
 @pytest.mark.parametrize("schema,table", [
     ("staging", "stg_wdi_raw"),

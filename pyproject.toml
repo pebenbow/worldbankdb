@@ -17,5 +17,11 @@ dev = [
 [tool.setuptools.packages.find]
 include = ["etl*"]
 
+[tool.pytest.ini_options]
+markers = [
+    "schema: read-only structural tests, safe to run against any database",
+    "integration: writes test data, requires an ephemeral database",
+]
+
 [project.scripts]
 etl = "etl.pipeline:main"

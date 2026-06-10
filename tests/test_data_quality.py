@@ -6,7 +6,11 @@ and two staging rows for year 2022 (not yet promoted to facts). Tests here
 exercise both invariants on existing data and the transform pipeline itself.
 """
 
+import pytest
+
 from etl.transform import upsert_dim_dates, upsert_fact_wdi
+
+pytestmark = [pytest.mark.integration, pytest.mark.usefixtures("seed")]
 
 
 def test_fact_wdi_grain_is_unique(cur):
