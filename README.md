@@ -17,11 +17,11 @@ A PostgreSQL data warehouse built on [Supabase](https://supabase.com) that store
 ### ELT flow
 
 ```mermaid
-flowchart LR
+flowchart TD
     API(["World Bank API"])
-    STG[("staging.stg_wdi_raw")]
-    DIM["dim_country\ndim_indicator\ndim_date"]
-    FACT[("fact_wdi")]
+    STG[("staging tables")]
+    DIM[("dim tables")]
+    FACT[("fact tables")]
 
     API -- "extract.py + load.py\npaginated HTTP, bulk insert" --> STG
     STG -- "transform.py\nSQL upsert" --> DIM
