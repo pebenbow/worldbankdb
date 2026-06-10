@@ -9,6 +9,8 @@ jobs:
     name: Push migrations to Supabase
     runs-on: ubuntu-latest
     environment: supabase_prod
+    permissions:
+      checks: write
 
     steps:
       - uses: actions/checkout@v4
@@ -38,4 +40,12 @@ jobs:
       - name: Smoke test migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: pytest -m schema -v
+        run: pytest -m schema -v --junit-xml=smoke-results.xml
+
+      - name: Publish smoke test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Migration Smoke Tests
+          path: smoke-results.xml
+          reporter: java-junit

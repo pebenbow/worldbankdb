@@ -8,6 +8,8 @@ jobs:
   test:
     name: Migrate and test
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
 
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +35,15 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:54322/postgres
-        run: pytest tests/ -v
+        run: pytest tests/ -v --junit-xml=test-results.xml
+
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Test Suite
+          path: test-results.xml
+          reporter: java-junit
 
       - name: Stop Supabase
         if: always()
